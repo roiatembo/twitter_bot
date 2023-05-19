@@ -1,7 +1,9 @@
 from datetime import datetime
 import random, time, math
+from functions import SendTweet
 # This bot needs to be able to tweet between 5 - 20 times in a day
 
+send_tweet = SendTweet()
 tweet_times = random.randint(5, 20)
 
 tweet_hours = []
@@ -14,7 +16,7 @@ while tweet_times > 0:
     tweet_minutes.append(minute)
     tweet_times -= 1
 
-def instertion_sort(tweet_hours):
+def insertion_sort(times_list):
     for i in range(1, len(tweet_hours)):
         j = i - 1
         temp_hour = tweet_hours[i]
@@ -23,16 +25,13 @@ def instertion_sort(tweet_hours):
             j -= 1
         tweet_hours[j+1] = temp_hour
     
-    return tweet_hours
-print(tweet_hours)
-instertion_sort(tweet_hours)
-print(tweet_hours)
-print(tweet_minutes)
+    return times_list
+
+insertion_sort(tweet_hours)
+insertion_sort(tweet_minutes)
 full_tweet_times = []
 for index in range(0, len(tweet_hours)):
     full_tweet_times.append({"hour": tweet_hours[index], "minute":tweet_minutes[index]})
-
-print(full_tweet_times)
 
 # on first run of the day, it gets the date and time
 current_time = datetime.now()
@@ -45,5 +44,6 @@ for schedule in full_tweet_times:
     tweet_time = datetime(year, month, day, schedule["hour"], schedule["minute"])
     now = datetime.now()
     wait_time = math.floor((tweet_time - now).total_seconds())
+    print(wait_time)
     time.sleep(wait_time)
-    print("I tweeted")
+    send_tweet.post_status("the tweet")
